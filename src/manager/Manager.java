@@ -1,3 +1,10 @@
+package manager;
+
+import status.Status;
+import tasks.Epic;
+import tasks.Subtask;
+import tasks.Task;
+
 import java.util.*;
 
 public class Manager {
@@ -5,32 +12,23 @@ public class Manager {
     private HashMap<Integer, Subtask> subTasks = new HashMap<>();
     private HashMap<Integer, Epic> epics = new HashMap<>();
 
-    int numberId = 0;
+    private int numberId = 0;
 
 // методы по Task
     public ArrayList<Task> showAllTasks () {
-        ArrayList<Task> listOfTask = new ArrayList<>();
-
-        for (Task task : tasks.values()) {
-            listOfTask.add(task);
-        }
-
-        System.out.println(listOfTask);
-        return listOfTask;
+        return new ArrayList<>(tasks.values());
     }
+
     public void clearAllTasks() {
         tasks.clear();
         System.out.println(tasks);
-        System.out.println("Task пустой");
+        System.out.println("tasks.Task пустой");
     }
+
     public Task showTaskById(int id) {
-        Task currentTask = tasks.get(id);
-
-        System.out.println("Найден нужный Task:");
-        System.out.println(currentTask);
-
-        return currentTask;
+        return tasks.get(id);
     }
+
     public void addTask(Task newTask) {
         newTask.setId(generateId());
         tasks.put(newTask.getId(), newTask);
@@ -47,7 +45,8 @@ public class Manager {
             System.out.println("Такой задачи нет");
         }
     }
-    public void deleteTaskById (int id) {
+
+    public void clearTaskById (int id) {
         if (tasks.containsKey(id)) {
             tasks.remove(id);
 
@@ -57,13 +56,11 @@ public class Manager {
         }
     }
 
-// -------------------- методы для Subtask ----------------------
+//  методы для Subtask
 
     //добавление сабтаска в эпик и в список всех сабтасков
     public void addSubtask(Subtask subtask, Epic epic){
         subtask.setId(generateId());
-        subtask.setStatus(Status.NEW);
-
         subTasks.put(subtask.getId(), subtask);
 
         epic.getSubtasks().add(subtask.getId());
@@ -76,19 +73,11 @@ public class Manager {
 
     // показывает список всех сабтасков всего
     public ArrayList<Subtask> showAllSubtasks () {
-        ArrayList<Subtask> listOfSubtask = new ArrayList<>();
-
-        for (Subtask subTask : subTasks.values()) {
-            listOfSubtask.add(subTask);
-        }
-
-        System.out.println(listOfSubtask);
-        return listOfSubtask;
+        return new ArrayList<>(subTasks.values());
     }
 
-
     // удаление всех сабтасков
-    public void deleteAllSubtasks() {
+    public void clearAllSubtasks() {
         subTasks.clear();
         for (Epic epic : epics.values()) {
             epic.getSubtasks().clear();
@@ -98,12 +87,7 @@ public class Manager {
 
     // получение по айди
     public Subtask showSubTaskById(int id) {
-        Subtask currentTask = subTasks.get(id);
-
-        System.out.println("Найден нужный сабтаск:");
-        System.out.println(currentTask);
-
-        return currentTask;
+        return subTasks.get(id);
     }
 
     // обновить сабтаск
@@ -124,12 +108,12 @@ public class Manager {
     }
 
     //удалить сабтаск по айди
-    public void deleteSubtaskById (int id) {
+    public void clearSubtaskById (Integer id) {
         if (subTasks.containsKey(id)) {
             Subtask subtask = showSubTaskById(id);
             int epicId = subtask.getIdEpic();
             Epic epic = showEpicById(epicId);
-            epic.getSubtasks().remove((Integer) id);
+            epic.getSubtasks().remove(id);
             subTasks.remove(id);
 
             // обновляем статус эпика
@@ -141,18 +125,12 @@ public class Manager {
         }
     }
 
-// -------------------- методы для Epic ----------------------
+// -------------------- методы для tasks.Epic ----------------------
 
     public ArrayList<Epic> showAllEpics () {
-        ArrayList<Epic> listOfEpic = new ArrayList<>();
-
-        for (Epic epic : epics.values()) {
-            listOfEpic.add(epic);
-        }
-
-        System.out.println(listOfEpic);
-        return listOfEpic;
+        return new ArrayList<>(epics.values());
     }
+
     public void clearAllEpics() {
         epics.clear();
         System.out.println(epics);
@@ -161,20 +139,17 @@ public class Manager {
         System.out.println(subTasks);
         System.out.println("Сабтаски пустые");
     }
+
     public Epic showEpicById(int id) {
-        Epic currentTask = epics.get(id);
-
-        System.out.println("Найден нужный эпик:");
-        System.out.println(currentTask);
-
-        return currentTask;
+        return epics.get(id);
     }
+
     public void addEpic(Epic newEpic) {
         newEpic.setId(generateId());
-        newEpic.setStatus(Status.NEW);
         epics.put(newEpic.getId(), newEpic);
         System.out.println("Эпик добавлен");
     }
+
     public void updateEpic (Epic updateEpic) {
         if (epics.containsKey(updateEpic.getId())) {
             System.out.println("Эпик найден. Обновляем.");
@@ -187,7 +162,7 @@ public class Manager {
         }
     }
 
-    public void deleteEpicById (int id) {
+    public void clearEpicById (int id) {
         if (epics.containsKey(id)) {
             Epic epic = showEpicById(id);
             // удалили у эпика его сабтаски из общего списка сабтасков
@@ -202,7 +177,6 @@ public class Manager {
             System.out.println("Такого эпика нет");
         }
     }
-
 
 //
     private int generateId() {
@@ -221,26 +195,32 @@ public class Manager {
     }
 
     private void changeStatusOfEpic (Epic epic) {
+
+        if (epic.getSubtasks().isEmpty()) {
+            epic.setStatus(Status.NEW);
+            return;
+        }
+
         int numberOfDone = 0;
-        int numberProgress = 0;
+        int numberOfNew = 0;
         List<Subtask> updatedSubtask = getListSubtasksofEpic(epic);
 
         for (int i=0; i < updatedSubtask.size(); i++) {
             if (updatedSubtask.get(i).getStatus() == Status.DONE) {
                 numberOfDone++;
-            } else if (updatedSubtask.get(i).getStatus() == Status.IN_PROGRESS) {
-                numberProgress++;
+            } else if (updatedSubtask.get(i).getStatus() == Status.NEW) {
+                numberOfNew++;
             }
         }
-        if (numberOfDone == 0 && numberProgress == 0) {
-            epic.setStatus(Status.NEW);
-        } else if (numberOfDone != 0 && numberOfDone == epic.getSubtasks().size()) {
+
+        if (numberOfDone == epic.getSubtasks().size()) {
             epic.setStatus(Status.DONE);
-        } else if (numberOfDone != 0 && numberOfDone != epic.getSubtasks().size()) {
-            epic.setStatus(Status.IN_PROGRESS);
-        } else if (numberProgress != 0) {
+        } else if (numberOfNew == epic.getSubtasks().size()) {
+            epic.setStatus(Status.NEW);
+        } else {
             epic.setStatus(Status.IN_PROGRESS);
         }
+
     }
 
 }
