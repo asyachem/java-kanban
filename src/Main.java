@@ -1,4 +1,3 @@
-import manager.InMemoryTaskManager;
 import manager.Managers;
 import manager.TaskManager;
 import tasks.Epic;
@@ -27,8 +26,6 @@ public class Main {
         manager.addEpic(epic2);
         Subtask sub3 = new Subtask("Морально подготовиться", "когда-нибудь", epic2.getId());
         manager.addSubtask(sub3, epic2);
-
-
 
         printAllTasks(manager);
     }

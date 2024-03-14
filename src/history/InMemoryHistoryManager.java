@@ -7,35 +7,26 @@ import java.util.Objects;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
+    private static final int MAX_SIZE_ARRAYLIST = 10;
+
     private final ArrayList<Task> historyTasks = new ArrayList<>();
 
     @Override
     public void add(Task task) {
-        checkHistorySize();
-        historyTasks.add(task);
+        if (task != null) {
+            checkHistorySize();
+            historyTasks.add(task);
+        }
     }
 
-     public void checkHistorySize() {
-        if (historyTasks.size() == 10) {
+     private void checkHistorySize() {
+        if (historyTasks.size() == MAX_SIZE_ARRAYLIST) {
             historyTasks.remove(0);
         }
     }
 
     @Override
     public ArrayList<Task> getHistory() {
-        return historyTasks;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        InMemoryHistoryManager that = (InMemoryHistoryManager) o;
-        return Objects.equals(historyTasks, that.historyTasks);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(historyTasks);
+        return new ArrayList<>(historyTasks);
     }
 }

@@ -9,11 +9,11 @@ import tasks.Task;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
+    private HistoryManager historyManager = Managers.getDefaultHistory();
     private HashMap<Integer, Task> tasks = new HashMap<>();
     private HashMap<Integer, Subtask> subTasks = new HashMap<>();
     private HashMap<Integer, Epic> epics = new HashMap<>();
     private int numberId = 0;
-    HistoryManager historyManager = Managers.getDefaultHistory();
 
 // методы по Task
     @Override
@@ -207,8 +207,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    @Override
-    public int generateId() {
+    private int generateId() {
         return numberId++;
     }
 
@@ -244,18 +243,5 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setStatus(Status.IN_PROGRESS);
         }
 
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        InMemoryTaskManager that = (InMemoryTaskManager) o;
-        return numberId == that.numberId && Objects.equals(tasks, that.tasks) && Objects.equals(subTasks, that.subTasks) && Objects.equals(epics, that.epics) && Objects.equals(historyManager, that.historyManager);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(tasks, subTasks, epics, numberId, historyManager);
     }
 }
