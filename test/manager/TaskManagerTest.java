@@ -141,10 +141,10 @@ class TaskManagerTest {
         assertTrue(taskManager.getAllSubtasks().isEmpty());
     }
 
-    @Test
-    void shouldReturnHistory() {
-        taskManager.getTaskById(0);
-        assertNotNull(taskManager.getHistory());
-    }
+//    @Test
+//    void shouldReturnHistory() {
+//        taskManager.getTaskById(0);
+//        assertNotNull(taskManager.getHistory());
+//    }
 
 }

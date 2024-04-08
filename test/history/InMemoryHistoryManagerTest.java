@@ -11,21 +11,34 @@ class InMemoryHistoryManagerTest {
 
     HistoryManager historyManager;
     Task task1;
+    int numberId = 0;
 
     @BeforeEach
     public void beforeEach() {
         historyManager = Managers.getDefaultHistory();
 
         task1 = new Task("Таск1","1");
+        task1.setId(generateId());
         Task task2 = new Task("Таск2","2");
-        Task task3 = new Task("Таск","3");
-        Task task4 = new Task("Таск","4");
-        Task task5 = new Task("Таск","5");
-        Task task6 = new Task("Таск","6");
-        Task task7 = new Task("Таск","7");
-        Task task8 = new Task("Таск","8");
-        Task task9 = new Task("Таск","9");
+        task2.setId(generateId());
+        Task task3 = new Task("Таск3","3");
+        task3.setId(generateId());
+        Task task4 = new Task("Таск4","4");
+        task4.setId(generateId());
+        Task task5 = new Task("Таск5","5");
+        task5.setId(generateId());
+        Task task6 = new Task("Таск6","6");
+        task6.setId(generateId());
+        Task task7 = new Task("Таск7","7");
+        task7.setId(generateId());
+        Task task8 = new Task("Таск8","8");
+        task8.setId(generateId());
+        Task task9 = new Task("Таск9","9");
+        task9.setId(generateId());
         Task task10 = new Task("Таск10","10");
+        task10.setId(generateId());
+        Task task11 = new Task("Таск11","11");
+        task11.setId(generateId());
 
         historyManager.add(task1);
         historyManager.add(task2);
@@ -37,8 +50,12 @@ class InMemoryHistoryManagerTest {
         historyManager.add(task8);
         historyManager.add(task9);
         historyManager.add(task10);
+        historyManager.add(task11);
     }
 
+    private int generateId() {
+        return numberId++;
+    }
 
 
     // убедитесь, что задачи, добавляемые в HistoryManager, сохраняют предыдущую версию задачи и её данных.
@@ -51,25 +68,16 @@ class InMemoryHistoryManagerTest {
         assertEquals(task1.getStatus(), currentTask.getStatus());
     }
 
-    // проверяет что 10 тасков добавятся в HistoryManager
+    // проверяет что больше 10 тасков добавятся в HistoryManager
     @Test
     public void save10TasksInHistoryManager() {
-        assertEquals(historyManager.getHistory().size(), 10);
+        assertEquals(historyManager.getHistory().size(), 11);
     }
 
-    // при добавлении 10 таска удаляет первый таск и сохраняет новый
+    // при вызове remove удаляет таск и размер на 1 меньше
     @Test
-    public void save11TaskAndDeleteFirstTask() {
-        Task task11 = new Task("Таск11","11");
-        historyManager.add(task11);
-
-        Task currentFirstTask = historyManager.getHistory().get(0);
-        Task currentTenTask = historyManager.getHistory().get(9);
-
-        assertEquals(currentFirstTask.getName(), "Таск2");
-        assertEquals(currentFirstTask.getDescription(), "2");
-
-        assertEquals(currentTenTask.getName(), "Таск11");
-        assertEquals(currentTenTask.getDescription(), "11");
+    public void deleteCurrentTaskAndSize10() {
+        historyManager.remove(0);
+        assertEquals(historyManager.getHistory().size(), 10);
     }
 }
