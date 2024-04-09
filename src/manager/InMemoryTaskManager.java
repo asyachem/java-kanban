@@ -91,6 +91,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void clearAllSubtasks() {
+        for (int id : subTasks.keySet()){
+            historyManager.remove(id);
+        }
+
         subTasks.clear();
         for (Epic epic : epics.values()) {
             epic.getSubtasks().clear();
@@ -163,9 +167,18 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void clearAllEpics() {
+        for (int id : epics.keySet()){
+            historyManager.remove(id);
+        }
+
         epics.clear();
         System.out.println(epics);
         System.out.println("Эпики пустые");
+
+        for (int id : subTasks.keySet()){
+            historyManager.remove(id);
+        }
+
         subTasks.clear();
         System.out.println(subTasks);
         System.out.println("Сабтаски пустые");

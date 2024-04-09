@@ -129,9 +129,12 @@ class TaskManagerTest {
 
     @Test
     void shouldClearEpicById() {
-        int epicId = epic.getId();
-        taskManager.clearEpicById(epicId);
-        assertFalse(taskManager.getAllEpics().contains(epic));
+        Epic epic1 = new Epic("Задача","описание");
+        taskManager.addEpic(epic1);
+
+        taskManager.clearEpicById(epic1.getId());
+
+        assertFalse(taskManager.getAllEpics().contains(epic1));
     }
 
     @Test
@@ -141,10 +144,10 @@ class TaskManagerTest {
         assertTrue(taskManager.getAllSubtasks().isEmpty());
     }
 
-//    @Test
-//    void shouldReturnHistory() {
-//        taskManager.getTaskById(0);
-//        assertNotNull(taskManager.getHistory());
-//    }
+    @Test
+    void shouldReturnHistory() {
+        taskManager.getTaskById(0);
+        assertNotNull(taskManager.getHistory());
+    }
 
 }
