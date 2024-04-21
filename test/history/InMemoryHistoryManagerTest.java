@@ -68,8 +68,9 @@ class InMemoryHistoryManagerTest {
 
         List<Task> history = historyManager.getHistory();
 
-        assertTrue(history.contains(task2));
-        assertTrue(history.contains(task3));
+        assertEquals(2, historyManager.getHistory().size());
+        assertEquals(task2, historyManager.getHistory().get(0));
+        assertEquals(task3, historyManager.getHistory().get(1));
     }
 
     // проверка на удаление из середины истории
@@ -79,8 +80,9 @@ class InMemoryHistoryManagerTest {
 
         List<Task> history = historyManager.getHistory();
 
-        assertTrue(history.contains(task1));
-        assertTrue(history.contains(task3));
+        assertEquals(2, historyManager.getHistory().size());
+        assertEquals(task1, historyManager.getHistory().get(0));
+        assertEquals(task3, historyManager.getHistory().get(1));
     }
 
     // проверка на удаление с конца истории
@@ -90,8 +92,9 @@ class InMemoryHistoryManagerTest {
 
         List<Task> history = historyManager.getHistory();
 
-        assertTrue(history.contains(task1));
-        assertTrue(history.contains(task2));
+        assertEquals(2, historyManager.getHistory().size());
+        assertEquals(task1, historyManager.getHistory().get(0));
+        assertEquals(task2, historyManager.getHistory().get(1));
     }
 
 
