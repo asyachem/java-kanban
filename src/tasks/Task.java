@@ -8,10 +8,17 @@ public class Task {
     private int id;
     private Status status;
 
+    protected final TypeTasks type;
+
     public Task(String name, String description) {
+        this(name, description, TypeTasks.TASK);
+    }
+
+    public Task(String name, String description, TypeTasks type) {
         this.name = name;
         this.description = description;
         this.status = Status.NEW;
+        this.type = type;
     }
 
     public void setId(int id) {
@@ -32,12 +39,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "tasks.Task{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", id=" + id +
-                ", status=" + status +
-                '}';
+        return id + "," + TypeTasks.TASK + "," + name + "," + status + "," + description + ",";
     }
 
     public String getName() {
@@ -67,5 +69,9 @@ public class Task {
     @Override
     public int hashCode() {
         return Objects.hash(name, description, id, status);
+    }
+
+    public TypeTasks getType() {
+        return type;
     }
 }

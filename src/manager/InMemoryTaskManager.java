@@ -1,12 +1,15 @@
 package manager;
 
 import history.HistoryManager;
-import tasks.Status;
 import tasks.Epic;
+import tasks.Status;
 import tasks.Subtask;
 import tasks.Task;
 
-import java.util.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private HistoryManager historyManager = Managers.getDefaultHistory();
@@ -33,6 +36,10 @@ public class InMemoryTaskManager implements TaskManager {
         historyManager.add(task);
 
         return task;
+    }
+
+    @Override
+    public void loadFromFile() throws IOException {
     }
 
     @Override

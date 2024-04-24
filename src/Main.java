@@ -4,10 +4,14 @@ import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 
+import java.io.IOException;
+
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         TaskManager manager = Managers.getDefault();
+
+        manager.loadFromFile();
 
         Task task1 = new Task("Стирка","стираем белье");
         Task task2 = new Task("Глажка","гладим белье");
