@@ -9,11 +9,15 @@ public class Epic extends Task {
     private final TypeTasks type = TypeTasks.EPIC;
 
     public Epic(String name, String description) {
-        super(name, description, TypeTasks.EPIC);
+        super(name, description);
     }
 
     public List<Integer> getSubtasks() {
         return subTasks;
+    }
+
+    public TypeTasks getType() {
+        return TypeTasks.EPIC;
     }
 
     @Override

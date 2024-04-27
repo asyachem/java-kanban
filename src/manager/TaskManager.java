@@ -1,10 +1,10 @@
 package manager;
 
 import tasks.Epic;
+import tasks.ManagerSaveException;
 import tasks.Subtask;
 import tasks.Task;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,30 +12,28 @@ public interface TaskManager {
 
     // методы по Task
     ArrayList<Task> getAllTasks();
-    void clearAllTasks();
+    void clearAllTasks() throws ManagerSaveException;
     Task getTaskById(int id);
-    void addTask(Task newTask);
-    void updateTask(Task updateTask);
-    void clearTaskById(int id);
+    void addTask(Task newTask) throws ManagerSaveException;
+    void updateTask(Task updateTask) throws ManagerSaveException;
+    void clearTaskById(int id) throws ManagerSaveException;
 
     //методы по Subtask
     ArrayList<Subtask> getAllSubtasks();
     List<Subtask> getListSubtasksofEpic(Epic epic);
-    void clearAllSubtasks();
+    void clearAllSubtasks() throws ManagerSaveException;
     Subtask getSubTaskById(int id);
-    void addSubtask(Subtask subtask, Epic epic);
-    void updateSubtask(Subtask updateTask);
-    void clearSubtaskById(Integer id);
+    void addSubtask(Subtask subtask) throws ManagerSaveException;
+    void updateSubtask(Subtask updateTask) throws ManagerSaveException;
+    void clearSubtaskById(Integer id) throws ManagerSaveException;
 
     // методы по Epic
     ArrayList<Epic> getAllEpics();
-    void clearAllEpics();
+    void clearAllEpics() throws ManagerSaveException;
     Epic getEpicById(int id);
-    void addEpic(Epic newEpic);
-    void updateEpic(Epic updateEpic);
-    void clearEpicById(int id);
+    void addEpic(Epic newEpic) throws ManagerSaveException;
+    void updateEpic(Epic updateEpic) throws ManagerSaveException;
+    void clearEpicById(int id) throws ManagerSaveException;
 
     List<Task> getHistory();
-
-    void loadFromFile() throws IOException;
 }

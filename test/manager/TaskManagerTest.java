@@ -3,6 +3,7 @@ package manager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
+import tasks.ManagerSaveException;
 import tasks.Subtask;
 import tasks.Task;
 
@@ -17,14 +18,14 @@ class TaskManagerTest {
     Epic epic;
 
     @BeforeEach
-    public void beforeEach() {
+    public void beforeEach() throws ManagerSaveException {
         taskManager = Managers.getDefault();
         task = new Task("Стирка","стираем белье");
         subtask = new Subtask("Стирка","стираем белье", 1);
         epic = new Epic("Стирка","стираем белье");
         taskManager.addTask(task);
         taskManager.addEpic(epic);
-        taskManager.addSubtask(subtask, epic);
+        taskManager.addSubtask(subtask);
     }
 
     // проверьте, что InMemoryTaskManager действительно добавляет задачи разного типа и может найти их по id;
@@ -45,7 +46,7 @@ class TaskManagerTest {
 
     // проверьте, что задачи с заданным id и сгенерированным id не конфликтуют внутри менеджера;
     @Test
-    public void shouldOverwriteId() {
+    public void shouldOverwriteId() throws ManagerSaveException {
         task.setId(8);
         taskManager.addTask(task);
 

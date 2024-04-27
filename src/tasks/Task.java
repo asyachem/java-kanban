@@ -8,17 +8,10 @@ public class Task {
     private int id;
     private Status status;
 
-    protected final TypeTasks type;
-
     public Task(String name, String description) {
-        this(name, description, TypeTasks.TASK);
-    }
-
-    public Task(String name, String description, TypeTasks type) {
         this.name = name;
         this.description = description;
         this.status = Status.NEW;
-        this.type = type;
     }
 
     public void setId(int id) {
@@ -72,6 +65,6 @@ public class Task {
     }
 
     public TypeTasks getType() {
-        return type;
+        return TypeTasks.TASK;
     }
 }

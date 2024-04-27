@@ -4,12 +4,16 @@ public class Subtask extends Task {
     private int idEpic;
 
     public Subtask(String name, String description, int idEpic) {
-        super(name, description, TypeTasks.SUBTASK);
+        super(name, description);
         this.idEpic = idEpic;
     }
 
     public int getIdEpic() {
         return idEpic;
+    }
+
+    public TypeTasks getType() {
+        return TypeTasks.SUBTASK;
     }
 
     @Override

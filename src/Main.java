@@ -4,14 +4,11 @@ import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 
-import java.io.IOException;
-
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         TaskManager manager = Managers.getDefault();
 
-        manager.loadFromFile();
 
         Task task1 = new Task("Стирка","стираем белье");
         Task task2 = new Task("Глажка","гладим белье");
@@ -23,13 +20,13 @@ public class Main {
         manager.addEpic(epic);
         Subtask sub1 = new Subtask("Мыть полы", "выходные", epic.getId());
         Subtask sub2 = new Subtask("Пропылесосить", "выходные", epic.getId());
-        manager.addSubtask(sub1, epic);
-        manager.addSubtask(sub2, epic);
+        manager.addSubtask(sub1);
+        manager.addSubtask(sub2);
 
         Epic epic2 = new Epic("Переезд", "переезд на дачу");
         manager.addEpic(epic2);
         Subtask sub3 = new Subtask("Морально подготовиться", "когда-нибудь", epic2.getId());
-        manager.addSubtask(sub3, epic2);
+        manager.addSubtask(sub3);
 
         printAllTasks(manager);
     }

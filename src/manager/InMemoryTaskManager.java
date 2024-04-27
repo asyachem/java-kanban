@@ -1,21 +1,17 @@
 package manager;
 
 import history.HistoryManager;
-import tasks.Epic;
-import tasks.Status;
-import tasks.Subtask;
-import tasks.Task;
+import tasks.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private HistoryManager historyManager = Managers.getDefaultHistory();
-    private HashMap<Integer, Task> tasks = new HashMap<>();
-    private HashMap<Integer, Subtask> subTasks = new HashMap<>();
-    private HashMap<Integer, Epic> epics = new HashMap<>();
+    protected HashMap<Integer, Task> tasks = new HashMap<>();
+    protected HashMap<Integer, Subtask> subTasks = new HashMap<>();
+    protected HashMap<Integer, Epic> epics = new HashMap<>();
     private int numberId = 0;
 
 // методы по Task
@@ -25,7 +21,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void clearAllTasks() {
+    public void clearAllTasks() throws ManagerSaveException {
         tasks.clear();
         System.out.println("tasks.Task пустой");
     }
@@ -39,17 +35,13 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void loadFromFile() throws IOException {
-    }
-
-    @Override
-    public void addTask(Task newTask) {
+    public void addTask(Task newTask) throws ManagerSaveException {
         newTask.setId(generateId());
         tasks.put(newTask.getId(), newTask);
     }
 
     @Override
-    public void updateTask(Task updateTask) {
+    public void updateTask(Task updateTask) throws ManagerSaveException {
         if (tasks.containsKey(updateTask.getId())) {
             System.out.println("Задача найдена. Обновляем.");
             tasks.put(updateTask.getId(), updateTask);
@@ -61,7 +53,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void clearTaskById(int id) {
+    public void clearTaskById(int id) throws ManagerSaveException {
         if (tasks.containsKey(id)) {
             tasks.remove(id);
 
@@ -74,15 +66,16 @@ public class InMemoryTaskManager implements TaskManager {
 //  методы для Subtask
 
     @Override
-    public void addSubtask(Subtask subtask, Epic epic){
+    public void addSubtask(Subtask subtask) throws ManagerSaveException {
         subtask.setId(generateId());
         subTasks.put(subtask.getId(), subtask);
+
+        Epic epic = getEpicById(subtask.getIdEpic());
 
         epic.getSubtasks().add(subtask.getId());
 
         // обновляем статусы сабтасков
         changeStatusOfEpic(epic);
-
     }
 
     @Override
@@ -91,7 +84,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void clearAllSubtasks() {
+    public void clearAllSubtasks() throws ManagerSaveException {
         subTasks.clear();
         for (Epic epic : epics.values()) {
             epic.getSubtasks().clear();
@@ -136,7 +129,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void clearSubtaskById(Integer id) {
+    public void clearSubtaskById(Integer id) throws ManagerSaveException {
         if (subTasks.containsKey(id)) {
             Subtask subtask = getSubTaskById(id);
             int epicId = subtask.getIdEpic();
@@ -161,7 +154,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void clearAllEpics() {
+    public void clearAllEpics() throws ManagerSaveException {
         epics.clear();
         System.out.println(epics);
         System.out.println("Эпики пустые");
@@ -179,13 +172,13 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void addEpic(Epic newEpic) {
+    public void addEpic(Epic newEpic) throws ManagerSaveException {
         newEpic.setId(generateId());
         epics.put(newEpic.getId(), newEpic);
     }
 
     @Override
-    public void updateEpic(Epic updateEpic) {
+    public void updateEpic(Epic updateEpic) throws ManagerSaveException {
         if (epics.containsKey(updateEpic.getId())) {
             System.out.println("Эпик найден. Обновляем.");
             epics.put(updateEpic.getId(), updateEpic);
@@ -198,7 +191,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void clearEpicById(int id) {
+    public void clearEpicById(int id) throws ManagerSaveException {
         if (epics.containsKey(id)) {
             Epic epic = getEpicById(id);
             // удалили у эпика его сабтаски из общего списка сабтасков
