@@ -3,12 +3,10 @@ package manager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
-import tasks.ManagerSaveException;
 import tasks.Subtask;
 import tasks.Task;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TaskManagerTest {
 
@@ -18,7 +16,7 @@ class TaskManagerTest {
     Epic epic;
 
     @BeforeEach
-    public void beforeEach() throws ManagerSaveException {
+    public void beforeEach() {
         taskManager = Managers.getDefault();
         task = new Task("Стирка","стираем белье");
         subtask = new Subtask("Стирка","стираем белье", 1);
@@ -46,7 +44,7 @@ class TaskManagerTest {
 
     // проверьте, что задачи с заданным id и сгенерированным id не конфликтуют внутри менеджера;
     @Test
-    public void shouldOverwriteId() throws ManagerSaveException {
+    public void shouldOverwriteId() {
         task.setId(8);
         taskManager.addTask(task);
 

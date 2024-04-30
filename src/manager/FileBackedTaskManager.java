@@ -9,95 +9,101 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
+    private final String filePath;
+
+    public FileBackedTaskManager(String filePath) {
+        super();
+        this.filePath = filePath;
+    }
 
     // методы по Task
     @Override
-    public void clearAllTasks() throws ManagerSaveException {
+    public void clearAllTasks() {
         super.clearAllTasks();
         save();
     }
     @Override
-    public void addTask(Task newTask) throws ManagerSaveException {
+    public void addTask(Task newTask) {
         super.addTask(newTask);
         save();
     }
 
     @Override
-    public void updateTask(Task updateTask) throws ManagerSaveException {
+    public void updateTask(Task updateTask) {
         super.updateTask(updateTask);
         save();
     }
 
     @Override
-    public void clearTaskById(int id) throws ManagerSaveException {
+    public void clearTaskById(int id) {
         super.clearTaskById(id);
         save();
     }
 
     //  методы для Subtask
     @Override
-    public void addSubtask(Subtask subtask) throws ManagerSaveException {
+    public void addSubtask(Subtask subtask) {
         super.addSubtask(subtask);
         save();
     }
 
     @Override
-    public void clearAllSubtasks() throws ManagerSaveException {
+    public void clearAllSubtasks() {
         super.clearAllSubtasks();
         save();
     }
 
     @Override
-    public void updateSubtask(Subtask updateTask) throws ManagerSaveException {
+    public void updateSubtask(Subtask updateTask) {
         super.updateSubtask(updateTask);
         save();
     }
 
     @Override
-    public void clearSubtaskById(Integer id) throws ManagerSaveException {
+    public void clearSubtaskById(Integer id) {
         super.clearSubtaskById(id);
         save();
     }
 
     // методы для Epic
     @Override
-    public void addEpic(Epic newEpic) throws ManagerSaveException {
+    public void addEpic(Epic newEpic) {
         super.addEpic(newEpic);
         save();
     }
 
     @Override
-    public void clearAllEpics() throws ManagerSaveException {
+    public void clearAllEpics() {
         super.clearAllEpics();
         save();
     }
 
     @Override
-    public void updateEpic(Epic updateEpic) throws ManagerSaveException {
+    public void updateEpic(Epic updateEpic) {
         super.updateEpic(updateEpic);
         save();
     }
 
     @Override
-    public void clearEpicById(int id) throws ManagerSaveException {
+    public void clearEpicById(int id) {
         super.clearEpicById(id);
         save();
     }
 
-    public void save() throws ManagerSaveException {
-        try (FileWriter writer = new FileWriter("tasks.csv")) {
+    public void save() {
+        try (FileWriter writer = new FileWriter(this.filePath)) {
             writer.write("id,type,name,status,description,epic");
             writer.write("\n");
             for (Task task : super.getAllTasks()) {
                 writer.write(task.toString());
                 writer.write("\n");
             }
-            for (Subtask subtask : super.getAllSubtasks()) {
-                writer.write(subtask.toString());
-                writer.write("\n");
-            }
             for (Epic epic : super.getAllEpics()) {
                 writer.write(epic.toString());
+                writer.write("\n");
+            }
+            for (Subtask subtask : super.getAllSubtasks()) {
+                writer.write(subtask.toString());
                 writer.write("\n");
             }
         } catch (IOException e) {
@@ -105,21 +111,28 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    public static FileBackedTaskManager loadFromFile()  {
-        FileBackedTaskManager taskManager = new FileBackedTaskManager();
+    public FileBackedTaskManager loadFromFile()  {
+        FileBackedTaskManager taskManager = new FileBackedTaskManager(this.filePath);
         try {
-            List<String> lines = Files.readAllLines(Paths.get("tasks.csv"));
+            List<String> lines = Files.readAllLines(Paths.get(this.filePath));
             for (int i = 1; i < lines.size(); i++) {
                 Task task = fromString(lines.get(i));
-                if (task.getType() == TypeTasks.TASK) {
-                    taskManager.tasks.put(task.getId(), task);
-                } else if (task.getType() == TypeTasks.SUBTASK) {
-                    taskManager.subTasks.put(task.getId(), (Subtask) task);
-                } else if (task.getType() == TypeTasks.EPIC) {
-                    taskManager.epics.put(task.getId(), (Epic) task);
+                switch (task.getType()) {
+                    case TASK:
+                        taskManager.tasks.put(task.getId(), task);
+                        break;
+                    case SUBTASK:
+                        taskManager.subTasks.put(task.getId(), (Subtask) task);
+                        Epic e = taskManager.getEpicById(((Subtask) task).getIdEpic());
+                        e.getSubtasks().add(((Subtask) task).getId());
+                        break;
+                    case EPIC:
+                        taskManager.epics.put(task.getId(), (Epic) task);
+                        break;
                 }
             }
-        } catch (IOException ignored) {
+        } catch (IOException e) {
+            throw new ManagerSaveException("Произошла ошибка во время чтения файла.");
         }
         return taskManager;
     }

@@ -9,7 +9,6 @@ public class Main {
     public static void main(String[] args) {
         TaskManager manager = Managers.getDefault();
 
-
         Task task1 = new Task("Стирка","стираем белье");
         Task task2 = new Task("Глажка","гладим белье");
 
