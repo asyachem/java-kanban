@@ -7,9 +7,6 @@ import tasks.Subtask;
 import tasks.Task;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -48,30 +45,10 @@ class FileBackedTaskManagerTest {
 
     @Test
     public void shouldReturnTask() throws IOException {
-        String fileTest = "test.csv";
-        FileBackedTaskManager anotherManager = new FileBackedTaskManager(fileTest).loadFromFile();
-        task1 = new Task("Стирка","стираем белье");
-        task2 = new Task("Глажка","гладим белье");
+        FileBackedTaskManager anotherManager = FileBackedTaskManager.loadFromFile("tasks.csv");
 
-        anotherManager.addTask(task1);
-        anotherManager.addTask(task2);
-
-        epic = new Epic("Глобальная уборка", "на выходных");
-        anotherManager.addEpic(epic);
-        sub1 = new Subtask("Мыть полы", "выходные", epic.getId());
-        sub2 = new Subtask("Пропылесосить", "выходные", epic.getId());
-        anotherManager.addSubtask(sub1);
-        anotherManager.addSubtask(sub2);
-
-        epic2 = new Epic("Переезд", "переезд на дачу");
-        anotherManager.addEpic(epic2);
-        sub3 = new Subtask("Морально подготовиться", "когда-нибудь", epic2.getId());
-        anotherManager.addSubtask(sub3);
-
-        List<String> file1 = Files.readAllLines(Paths.get("tasks.csv"));
-        List<String> file2 = Files.readAllLines(Paths.get("test.csv"));
-        for (int i = 1; i < file1.size(); i++) {
-            assertEquals(file1.get(i), file2.get(i));
-        }
+        assertEquals(taskManager.getAllTasks(), anotherManager.getAllTasks());
+        assertEquals(taskManager.getAllEpics(), anotherManager.getAllEpics());
+        assertEquals(taskManager.getAllSubtasks(), anotherManager.getAllSubtasks());
     }
 }
