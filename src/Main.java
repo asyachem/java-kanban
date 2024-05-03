@@ -1,3 +1,4 @@
+import history.HistoryManager;
 import manager.Managers;
 import manager.TaskManager;
 import tasks.Epic;
@@ -8,6 +9,7 @@ public class Main {
 
     public static void main(String[] args) {
         TaskManager manager = Managers.getDefault();
+
 
         Task task1 = new Task("Стирка","стираем белье");
         Task task2 = new Task("Глажка","гладим белье");
@@ -26,6 +28,11 @@ public class Main {
         manager.addEpic(epic2);
         Subtask sub3 = new Subtask("Морально подготовиться", "когда-нибудь", epic2.getId());
         manager.addSubtask(sub3, epic2);
+
+        manager.getTaskById(0);
+        manager.getSubTaskById(6);
+        manager.getSubTaskById(3);
+        manager.clearAllTasks();
 
         printAllTasks(manager);
     }
@@ -47,9 +54,9 @@ public class Main {
         for (Task subtask : manager.getAllSubtasks()) {
             System.out.println(subtask);
         }
-//        System.out.println("История:");
-//        for (Task task : manager.getHistory()) {
-//            System.out.println(task);
-//        }
+        System.out.println("История:");
+        for (Task task : manager.getHistory()) {
+            System.out.println(task);
+        }
     }
 }

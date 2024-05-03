@@ -23,6 +23,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void clearAllTasks() {
+        for (int id : tasks.keySet()){
+            historyManager.remove(id);
+        }
+
         tasks.clear();
         System.out.println("tasks.Task пустой");
     }
@@ -58,6 +62,8 @@ public class InMemoryTaskManager implements TaskManager {
         if (tasks.containsKey(id)) {
             tasks.remove(id);
 
+            historyManager.remove(id);
+
             System.out.println("Задачу удалили.");
         } else {
             System.out.println("Такой задачи нет");
@@ -85,6 +91,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void clearAllSubtasks() {
+        for (int id : subTasks.keySet()){
+            historyManager.remove(id);
+        }
+
         subTasks.clear();
         for (Epic epic : epics.values()) {
             epic.getSubtasks().clear();
@@ -137,6 +147,8 @@ public class InMemoryTaskManager implements TaskManager {
             epic.getSubtasks().remove(id);
             subTasks.remove(id);
 
+            historyManager.remove(id);
+
             // обновляем статус эпика
             changeStatusOfEpic(epic);
 
@@ -155,9 +167,18 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void clearAllEpics() {
+        for (int id : epics.keySet()){
+            historyManager.remove(id);
+        }
+
         epics.clear();
         System.out.println(epics);
         System.out.println("Эпики пустые");
+
+        for (int id : subTasks.keySet()){
+            historyManager.remove(id);
+        }
+
         subTasks.clear();
         System.out.println(subTasks);
         System.out.println("Сабтаски пустые");
@@ -197,9 +218,13 @@ public class InMemoryTaskManager implements TaskManager {
             // удалили у эпика его сабтаски из общего списка сабтасков
             for (Integer subtaskId : epic.getSubtasks()) {
                 subTasks.remove(subtaskId);
+
+                historyManager.remove(subtaskId);
             }
             // удалили сам эпик из общего списка
             epics.remove(id);
+
+            historyManager.remove(id);
 
             System.out.println("Эпик удалили.");
         } else {
