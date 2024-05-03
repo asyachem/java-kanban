@@ -9,6 +9,12 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
+    String filePath;
+
+    public FileBackedTaskManager(String filePath) {
+        super();
+        this.filePath = filePath;
+    }
 
     // методы по Task
     @Override
@@ -85,7 +91,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public void save() {
-        try (FileWriter writer = new FileWriter("tasks.csv")) {
+        try (FileWriter writer = new FileWriter(this.filePath)) {
             writer.write("id,type,name,status,description,epic");
             writer.write("\n");
             for (Task task : super.getAllTasks()) {
@@ -106,7 +112,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public static FileBackedTaskManager loadFromFile(String filePath)  {
-        FileBackedTaskManager taskManager = new FileBackedTaskManager();
+        FileBackedTaskManager taskManager = new FileBackedTaskManager(filePath);
         try {
             List<String> lines = Files.readAllLines(Paths.get(filePath));
             for (int i = 1; i < lines.size(); i++) {
