@@ -1,18 +1,17 @@
 package manager;
 
 import history.HistoryManager;
-import tasks.Status;
-import tasks.Epic;
-import tasks.Subtask;
-import tasks.Task;
+import tasks.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private HistoryManager historyManager = Managers.getDefaultHistory();
-    private HashMap<Integer, Task> tasks = new HashMap<>();
-    private HashMap<Integer, Subtask> subTasks = new HashMap<>();
-    private HashMap<Integer, Epic> epics = new HashMap<>();
+    protected HashMap<Integer, Task> tasks = new HashMap<>();
+    protected HashMap<Integer, Subtask> subTasks = new HashMap<>();
+    protected HashMap<Integer, Epic> epics = new HashMap<>();
     private int numberId = 0;
 
 // методы по Task
@@ -73,15 +72,16 @@ public class InMemoryTaskManager implements TaskManager {
 //  методы для Subtask
 
     @Override
-    public void addSubtask(Subtask subtask, Epic epic){
+    public void addSubtask(Subtask subtask) {
         subtask.setId(generateId());
         subTasks.put(subtask.getId(), subtask);
+
+        Epic epic = getEpicById(subtask.getIdEpic());
 
         epic.getSubtasks().add(subtask.getId());
 
         // обновляем статусы сабтасков
         changeStatusOfEpic(epic);
-
     }
 
     @Override

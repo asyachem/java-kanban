@@ -11,4 +11,14 @@ public class Subtask extends Task {
     public int getIdEpic() {
         return idEpic;
     }
+
+    public TypeTasks getType() {
+        return TypeTasks.SUBTASK;
+    }
+
+    @Override
+    public String toString() {
+        return super.getId() + "," + TypeTasks.SUBTASK + "," +
+                super.getName() + "," + super.getStatus() + "," + super.getDescription() + "," + idEpic + ",";
+    }
 }

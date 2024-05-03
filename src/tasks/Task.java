@@ -32,12 +32,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "tasks.Task{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", id=" + id +
-                ", status=" + status +
-                '}';
+        return id + "," + TypeTasks.TASK + "," + name + "," + status + "," + description + ",";
     }
 
     public String getName() {
@@ -67,5 +62,9 @@ public class Task {
     @Override
     public int hashCode() {
         return Objects.hash(name, description, id, status);
+    }
+
+    public TypeTasks getType() {
+        return TypeTasks.TASK;
     }
 }

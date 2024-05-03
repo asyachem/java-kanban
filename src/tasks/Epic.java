@@ -14,4 +14,14 @@ public class Epic extends Task {
     public List<Integer> getSubtasks() {
         return subTasks;
     }
+
+    public TypeTasks getType() {
+        return TypeTasks.EPIC;
+    }
+
+    @Override
+    public String toString() {
+        return super.getId() + "," + TypeTasks.EPIC + "," +
+                super.getName() + "," + super.getStatus() + "," + super.getDescription() + ",";
+    }
 }

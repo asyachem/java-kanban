@@ -7,7 +7,6 @@ import tasks.Subtask;
 import tasks.Task;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TaskManagerTest {
 
@@ -24,7 +23,7 @@ class TaskManagerTest {
         epic = new Epic("Стирка","стираем белье");
         taskManager.addTask(task);
         taskManager.addEpic(epic);
-        taskManager.addSubtask(subtask, epic);
+        taskManager.addSubtask(subtask);
     }
 
     // проверьте, что InMemoryTaskManager действительно добавляет задачи разного типа и может найти их по id;
