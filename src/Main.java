@@ -1,25 +1,31 @@
-import history.HistoryManager;
 import manager.Managers;
 import manager.TaskManager;
 import tasks.Epic;
-import tasks.Subtask;
 import tasks.Task;
+import tasks.Subtask;
+
+import java.time.LocalDateTime;
 
 public class Main {
 
     public static void main(String[] args) {
         TaskManager manager = Managers.getDefault();
 
-
-        Task task1 = new Task("Стирка","стираем белье");
-        Task task2 = new Task("Глажка","гладим белье");
+        Task task1 = new Task("task1","описание", 20, LocalDateTime.of(2024, 6, 10, 10, 0));
+        Task task2 = new Task("task2","описание", 20, LocalDateTime.of(2024, 6, 1, 10, 0));
+        Task task3 = new Task("task3","описание", 20, LocalDateTime.of(2024, 6, 5, 15, 0));
+        Task task4 = new Task("task4","описание", 20, LocalDateTime.of(2024, 6, 1, 9, 30));
+        Task task5 = new Task("task5","описание", 10, LocalDateTime.of(2024, 6, 1, 9, 40));
 
         manager.addTask(task1);
         manager.addTask(task2);
+        manager.addTask(task3);
+        manager.addTask(task4);
+        manager.addTask(task5);
 
         Epic epic = new Epic("Глобальная уборка", "на выходных");
         manager.addEpic(epic);
-        Subtask sub1 = new Subtask("Мыть полы", "выходные", epic.getId());
+        Subtask sub1 = new Subtask("Мыть полы", "выходные", epic.getId(), 20, LocalDateTime.of(2024, 7, 10, 10, 0));
         Subtask sub2 = new Subtask("Пропылесосить", "выходные", epic.getId());
         manager.addSubtask(sub1);
         manager.addSubtask(sub2);
@@ -28,11 +34,6 @@ public class Main {
         manager.addEpic(epic2);
         Subtask sub3 = new Subtask("Морально подготовиться", "когда-нибудь", epic2.getId());
         manager.addSubtask(sub3);
-
-        manager.getTaskById(0);
-        manager.getSubTaskById(6);
-        manager.getSubTaskById(3);
-        manager.clearAllTasks();
 
         printAllTasks(manager);
     }

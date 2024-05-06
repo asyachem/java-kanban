@@ -1,5 +1,7 @@
 package tasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Task {
@@ -7,11 +9,21 @@ public class Task {
     private String description;
     private int id;
     private Status status;
+    private Duration duration; //продолжительность задачи
+    private LocalDateTime startTime; //дата и время, когда предполагается приступить к выполнению задачи
 
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
         this.status = Status.NEW;
+    }
+
+    public Task(String name, String description, long duration, LocalDateTime startTime) {
+        this.name = name;
+        this.description = description;
+        this.status = Status.NEW;
+        this.duration = Duration.ofMinutes(duration);
+        this.startTime = startTime;
     }
 
     public void setId(int id) {
@@ -32,7 +44,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return id + "," + TypeTasks.TASK + "," + name + "," + status + "," + description + ",";
+        return id + "," + TypeTasks.TASK + "," + name + "," + status + "," + description + "," + startTime + "," + duration + ",";
     }
 
     public String getName() {
@@ -66,5 +78,26 @@ public class Task {
 
     public TypeTasks getType() {
         return TypeTasks.TASK;
+    }
+
+    //дата и время завершения задачи
+    public LocalDateTime getEndTime() {
+        return startTime.plus(duration);
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
     }
 }
