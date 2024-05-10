@@ -6,7 +6,7 @@ import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.TreeSet;
 
 public interface TaskManager {
 
@@ -36,4 +36,5 @@ public interface TaskManager {
     void clearEpicById(int id);
 
     List<Task> getHistory();
+    TreeSet<Task> getPrioritizedTasks();
 }

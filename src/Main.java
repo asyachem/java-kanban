@@ -12,16 +12,14 @@ public class Main {
         TaskManager manager = Managers.getDefault();
 
         Task task1 = new Task("task1","описание", 20, LocalDateTime.of(2024, 6, 10, 10, 0));
-        Task task2 = new Task("task2","описание", 20, LocalDateTime.of(2024, 6, 1, 10, 0));
-        Task task3 = new Task("task3","описание", 20, LocalDateTime.of(2024, 6, 5, 15, 0));
-        Task task4 = new Task("task4","описание", 20, LocalDateTime.of(2024, 6, 1, 9, 30));
-        Task task5 = new Task("task5","описание", 10, LocalDateTime.of(2024, 6, 1, 9, 40));
+        Task task2 = new Task("task2","описание1", 20, LocalDateTime.of(2024, 6, 5, 15, 0));
+        Task task3 = new Task("task3","описание2", 20, LocalDateTime.of(2024, 6, 5, 15, 0));
+        Task task4 = new Task("task4","описание", 20, LocalDateTime.of(2024, 6, 1, 10, 0));
 
         manager.addTask(task1);
         manager.addTask(task2);
         manager.addTask(task3);
         manager.addTask(task4);
-        manager.addTask(task5);
 
         Epic epic = new Epic("Глобальная уборка", "на выходных");
         manager.addEpic(epic);
@@ -36,6 +34,8 @@ public class Main {
         manager.addSubtask(sub3);
 
         printAllTasks(manager);
+        System.out.println("-----");
+        System.out.println(manager.getPrioritizedTasks());
     }
 
     private static void printAllTasks(TaskManager manager) {

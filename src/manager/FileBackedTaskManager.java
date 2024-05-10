@@ -8,14 +8,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.TreeSet;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-    Comparator<Task> taskComparator = new TaskComparator();
-    TreeSet<Task> prioritizedTasks = new TreeSet<>(taskComparator);
-    String filePath;
+    private String filePath;
 
     public FileBackedTaskManager(String filePath) {
         super();
@@ -130,31 +126,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
-    private void checkTaskTime(Task task) {
-        List<Subtask> subtasks = super.getAllSubtasks();
-        List<Task> tasks = super.getAllTasks();
-        for (Subtask t : subtasks) {
-            if ((t.getStartTime().equals(task.getStartTime()) && t.getEndTime().equals(task.getEndTime())) ||
-                    t.getStartTime().isBefore(task.getStartTime()) && t.getEndTime().isAfter(task.getStartTime()) ||
-                    task.getStartTime().isBefore(t.getStartTime()) && task.getEndTime().isAfter(t.getStartTime()) ||
-                    t.getStartTime().isBefore(task.getStartTime()) && t.getEndTime().isAfter(task.getEndTime()) ||
-                    task.getStartTime().isBefore(t.getStartTime()) && task.getEndTime().isAfter(t.getEndTime())
-            ) {
-                throw new RuntimeException("Уже есть сабтаск с таким временем");
-            }
-        }
-        for (Task t : tasks) {
-            if ((t.getStartTime().equals(task.getStartTime()) && t.getEndTime().equals(task.getEndTime())) ||
-                    t.getStartTime().isBefore(task.getStartTime()) && t.getEndTime().isAfter(task.getStartTime()) ||
-                    task.getStartTime().isBefore(t.getStartTime()) && task.getEndTime().isAfter(t.getStartTime()) ||
-                    t.getStartTime().isBefore(task.getStartTime()) && t.getEndTime().isAfter(task.getEndTime()) ||
-                    task.getStartTime().isBefore(t.getStartTime()) && task.getEndTime().isAfter(t.getEndTime())
-            ) {
-                throw new RuntimeException("Уже есть таск с таким временем");
-            }
-        }
-    }
-
     // методы для Epic
     @Override
     public void addEpic(Epic newEpic) {
@@ -244,22 +215,5 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         task.setId(Integer.valueOf(str[0]));
         task.setStatus(Status.valueOf(str[3]));
         return task;
-    }
-
-    public TreeSet<Task> getPrioritizedTasks() {
-        return this.prioritizedTasks;
-    }
-}
-
-class TaskComparator implements Comparator<Task> {
-
-    public int compare(Task a, Task b) {
-        if ((a.getStartTime()).isBefore(b.getStartTime())) {
-            return -1;
-        } else if ((a.getStartTime()).isAfter(b.getStartTime())) {
-            return 1;
-        } else {
-            return 0;
-        }
     }
 }

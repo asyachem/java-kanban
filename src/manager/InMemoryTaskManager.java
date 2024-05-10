@@ -3,15 +3,16 @@ package manager;
 import history.HistoryManager;
 import tasks.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.time.Duration;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
     private HistoryManager historyManager = Managers.getDefaultHistory();
     protected HashMap<Integer, Task> tasks = new HashMap<>();
     protected HashMap<Integer, Subtask> subTasks = new HashMap<>();
     protected HashMap<Integer, Epic> epics = new HashMap<>();
+    protected Comparator<Task> taskComparator = new TaskComparator();
+    protected TreeSet<Task> prioritizedTasks = new TreeSet<>(taskComparator);
     private int numberId = 0;
 
 // методы по Task
@@ -82,6 +83,8 @@ public class InMemoryTaskManager implements TaskManager {
 
         // обновляем статусы сабтасков
         changeStatusOfEpic(epic);
+        // расчет длительности эпика
+        calculateEpicDuration(epic);
     }
 
     @Override
@@ -131,7 +134,8 @@ public class InMemoryTaskManager implements TaskManager {
 
             // обновляем статусы сабтасков
             changeStatusOfEpic(thisEpic);
-
+            // расчет длительности эпика
+            calculateEpicDuration(thisEpic);
             System.out.println("Сабтаск обновили.");
         } else {
             System.out.println("Такого сабтаска нет");
@@ -151,6 +155,8 @@ public class InMemoryTaskManager implements TaskManager {
 
             // обновляем статус эпика
             changeStatusOfEpic(epic);
+            // расчет длительности эпика
+            calculateEpicDuration(epic);
 
             System.out.println("Сабтаск удалили.");
         } else {
@@ -206,6 +212,8 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Эпик обновили.");
             // обновляем статус эпика
             changeStatusOfEpic(updateEpic);
+            // расчет длительности эпика
+            calculateEpicDuration(updateEpic);
         } else {
             System.out.println("Такого эпика нет");
         }
@@ -268,5 +276,48 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setStatus(Status.IN_PROGRESS);
         }
 
+    }
+
+    private Duration calculateEpicDuration (Epic epic) {
+        Duration currentDuretion = epic.getDuration();
+        List<Subtask> listSubtasks = this.getListSubtasksofEpic(epic);
+
+        for (Subtask s : listSubtasks) {
+            if (s.getDuration() != null && currentDuretion == null) {
+                currentDuretion = s.getDuration();
+            }
+            if (s.getDuration() != null && currentDuretion != null) {
+                currentDuretion.plusMinutes(s.getDuration().toMinutes());
+            }
+        }
+
+        return currentDuretion;
+    }
+
+    protected void checkTaskTime(Task task) {
+        TreeSet<Task> prioritizedT = this.prioritizedTasks;
+        for (Task task1 : prioritizedT) {
+            if ((task1.getStartTime().equals(task.getStartTime()) && task1.getEndTime().equals(task.getEndTime())) || (task1.getStartTime().isBefore(task.getEndTime()) && task1.getEndTime().isAfter(task.getStartTime()))) {
+                throw new RuntimeException("Уже есть задача с таким временем");
+            }
+        }
+    }
+
+    @Override
+    public TreeSet<Task> getPrioritizedTasks() {
+        return this.prioritizedTasks;
+    }
+}
+
+class TaskComparator implements Comparator<Task> {
+
+    public int compare(Task a, Task b) {
+        if ((a.getStartTime()).isBefore(b.getStartTime())) {
+            return -1;
+        } else if ((a.getStartTime()).isAfter(b.getStartTime())) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }

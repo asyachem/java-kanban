@@ -82,7 +82,7 @@ public class Task {
 
     //дата и время завершения задачи
     public LocalDateTime getEndTime() {
-        return startTime.plus(duration);
+        return startTime.plusMinutes(duration.toMinutes());
     }
 
     public Duration getDuration() {
