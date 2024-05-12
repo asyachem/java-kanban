@@ -24,7 +24,7 @@ public class Main {
         Epic epic = new Epic("Глобальная уборка", "на выходных");
         manager.addEpic(epic);
         Subtask sub1 = new Subtask("Мыть полы", "выходные", epic.getId(), 20, LocalDateTime.of(2024, 7, 10, 10, 0));
-        Subtask sub2 = new Subtask("Пропылесосить", "выходные", epic.getId());
+        Subtask sub2 = new Subtask("Пропылесосить", "выходные", epic.getId(), 20, LocalDateTime.of(2024, 7, 10, 11, 0));
         manager.addSubtask(sub1);
         manager.addSubtask(sub2);
 
@@ -35,7 +35,14 @@ public class Main {
 
         printAllTasks(manager);
         System.out.println("-----");
-        System.out.println(manager.getPrioritizedTasks());
+        for (Task task : manager.getPrioritizedTasks()) {
+            System.out.println(task);
+        }
+
+        System.out.println("-------");
+        System.out.println(epic.getDuration());
+        System.out.println(epic.getStartTime());
+        System.out.println(epic.getEndTime());
     }
 
     private static void printAllTasks(TaskManager manager) {

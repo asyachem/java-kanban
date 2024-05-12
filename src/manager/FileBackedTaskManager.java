@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -21,26 +20,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     // методы по Task
     @Override
     public void clearAllTasks() {
-        ArrayList<Task> tasks = super.getAllTasks();
-        for (Task t : tasks) {
-            if (this.prioritizedTasks.contains(t)) {
-                this.prioritizedTasks.remove(t);
-            }
-        }
         super.clearAllTasks();
         save();
     }
     @Override
     public void addTask(Task newTask) {
-        if (newTask.getDuration() != null) {
-            try {
-                checkTaskTime(newTask);
-            } catch (RuntimeException e) {
-                System.out.println(e.getMessage());
-                return;
-            }
-            this.prioritizedTasks.add(newTask);
-        }
         super.addTask(newTask);
         save();
     }
@@ -48,26 +32,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public void updateTask(Task updateTask) {
-        if (updateTask.getDuration() != null) {
-            try {
-                checkTaskTime(updateTask);
-            } catch (RuntimeException e) {
-                System.out.println(e.getMessage());
-                return;
-            }
-            this.prioritizedTasks.remove(super.getTaskById(updateTask.getId()));
-            this.prioritizedTasks.add(updateTask);
-        }
         super.updateTask(updateTask);
         save();
     }
 
     @Override
     public void clearTaskById(int id) {
-        Task task = super.getTaskById(id);
-        if (this.prioritizedTasks.contains(task)) {
-            this.prioritizedTasks.remove(task);
-        }
         super.clearTaskById(id);
         save();
     }
@@ -75,53 +45,24 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     //  методы для Subtask
     @Override
     public void addSubtask(Subtask subtask) {
-        if (subtask.getDuration() != null) {
-            try {
-                checkTaskTime(subtask);
-            } catch (RuntimeException e) {
-                System.out.println(e.getMessage());
-                return;
-            }
-            this.prioritizedTasks.add(subtask);
-        }
         super.addSubtask(subtask);
         save();
     }
 
     @Override
     public void clearAllSubtasks() {
-        ArrayList<Subtask> subtasks = super.getAllSubtasks();
-        for (Task t : subtasks) {
-            if (this.prioritizedTasks.contains(t)) {
-                this.prioritizedTasks.remove(t);
-            }
-        }
         super.clearAllSubtasks();
         save();
     }
 
     @Override
     public void updateSubtask(Subtask updateTask) {
-        if (updateTask.getDuration() != null) {
-            try {
-                checkTaskTime(updateTask);
-            } catch (RuntimeException e) {
-                System.out.println(e.getMessage());
-                return;
-            }
-            this.prioritizedTasks.remove(super.getSubTaskById(updateTask.getId()));
-            this.prioritizedTasks.add(updateTask);
-        }
         super.updateSubtask(updateTask);
         save();
     }
 
     @Override
     public void clearSubtaskById(Integer id) {
-        Subtask subtask = super.getSubTaskById(id);
-        if (this.prioritizedTasks.contains(subtask)) {
-            this.prioritizedTasks.remove(subtask);
-        }
         super.clearSubtaskById(id);
         save();
     }
