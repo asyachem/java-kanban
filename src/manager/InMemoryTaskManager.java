@@ -24,14 +24,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void clearAllTasks() {
-        for (Task t : this.getAllTasks()) {
-            if (this.prioritizedTasks.contains(t)) {
-                this.prioritizedTasks.remove(t);
-            }
-        }
-
-        for (int id : tasks.keySet()){
-            historyManager.remove(id);
+        for (Task task : tasks.values()){
+            historyManager.remove(task.getId());
+            prioritizedTasks.remove(task);
         }
 
         tasks.clear();
@@ -136,14 +131,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void clearAllSubtasks() {
-        for (Task t : this.getAllSubtasks()) {
-            if (this.prioritizedTasks.contains(t)) {
-                this.prioritizedTasks.remove(t);
-            }
-        }
-
-        for (int id : subTasks.keySet()){
-            historyManager.remove(id);
+        for (Subtask subtask : subTasks.values()){
+            historyManager.remove(subtask.getId());
+            prioritizedTasks.remove(subtask);
         }
 
         subTasks.clear();
@@ -367,18 +357,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     private LocalDateTime getEpicStartTime(Epic epic) {
         List<Subtask> listSubtasks = this.getListSubtasksofEpic(epic);
-        LocalDateTime startTime = null;
+        LocalDateTime startTime = LocalDateTime.MAX;
         for (Subtask s : listSubtasks) {
-            if (s.getStartTime() != null && startTime == null) {
+            if (s.getStartTime() != null && s.getStartTime().isBefore(startTime)) {
                 startTime = s.getStartTime();
-                continue;
-            }
-            if (s.getStartTime() != null && startTime != null) {
-                if (s.getStartTime().isBefore(startTime)) {
-                    startTime = s.getStartTime();
-                }
             }
         }
+        if (startTime == LocalDateTime.MAX) startTime = null;
         epic.setStartTime(startTime);
         return startTime;
     }
@@ -393,7 +378,8 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    protected void checkTaskTime(Task task) {
+    @Override
+    public void checkTaskTime(Task task) {
         TreeSet<Task> prioritizedT = this.prioritizedTasks;
         for (Task task1 : prioritizedT) {
             if ((task1.getStartTime().equals(task.getStartTime()) && task1.getEndTime().equals(task.getEndTime())) || (task1.getStartTime().isBefore(task.getEndTime()) && task1.getEndTime().isAfter(task.getStartTime()))) {

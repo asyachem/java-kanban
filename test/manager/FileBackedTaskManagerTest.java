@@ -7,6 +7,7 @@ import tasks.Subtask;
 import tasks.Task;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -24,7 +25,7 @@ class FileBackedTaskManagerTest {
     public void beforeEach() {
         taskManager = Managers.getDefault();
 
-        task1 = new Task("Стирка","стираем белье");
+        task1 = new Task("task1","описание", 20, LocalDateTime.of(2024, 6, 10, 10, 0));
         task2 = new Task("Глажка","гладим белье");
 
         taskManager.addTask(task1);
@@ -32,7 +33,8 @@ class FileBackedTaskManagerTest {
 
         epic = new Epic("Глобальная уборка", "на выходных");
         taskManager.addEpic(epic);
-        sub1 = new Subtask("Мыть полы", "выходные", epic.getId());
+        sub1 = new Subtask("subtask1", "описание", epic.getId(), 20, LocalDateTime.of(2024, 7, 10, 10, 0));
+
         sub2 = new Subtask("Пропылесосить", "выходные", epic.getId());
         taskManager.addSubtask(sub1);
         taskManager.addSubtask(sub2);
@@ -50,5 +52,13 @@ class FileBackedTaskManagerTest {
         assertEquals(taskManager.getAllTasks(), anotherManager.getAllTasks());
         assertEquals(taskManager.getAllEpics(), anotherManager.getAllEpics());
         assertEquals(taskManager.getAllSubtasks(), anotherManager.getAllSubtasks());
+    }
+
+    @Test
+    void shouldReturnPrioritizedTask() {
+        FileBackedTaskManager anotherManager = FileBackedTaskManager.loadFromFile("tasks.csv");
+
+        assertEquals(anotherManager.prioritizedTasks.first(), task1);
+        assertEquals(anotherManager.prioritizedTasks.last(), sub1);
     }
 }

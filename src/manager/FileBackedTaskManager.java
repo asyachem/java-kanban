@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -122,11 +123,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 switch (task.getType()) {
                     case TASK:
                         taskManager.tasks.put(task.getId(), task);
+                        if (task.getDuration() != null) {
+                            taskManager.prioritizedTasks.add(task);
+                        }
                         break;
                     case SUBTASK:
                         taskManager.subTasks.put(task.getId(), (Subtask) task);
                         Epic e = taskManager.getEpicById(((Subtask) task).getIdEpic());
                         e.getSubtasks().add(((Subtask) task).getId());
+                        if (task.getDuration() != null) {
+                            taskManager.prioritizedTasks.add(task);
+                        }
                         break;
                     case EPIC:
                         taskManager.epics.put(task.getId(), (Epic) task);
@@ -143,13 +150,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String[] str = value.split(",");
         Task task = null;
         if (TypeTasks.TASK.toString().equals(str[1])) {
-            if (!str[5].equals(null) && str[6].equals(null)) {
-                task = new Task(str[2], str[4], Long.parseLong(str[5]), LocalDateTime.parse(str[6]));
+            if (!str[5].equals("null") && !str[6].equals("null")) {
+                task = new Task(str[2], str[4], Duration.parse(str[6]), LocalDateTime.parse(str[5]));
             } else {
                 task = new Task(str[2], str[4]);
             }
         } else if (TypeTasks.SUBTASK.toString().equals(str[1])) {
-            task = new Subtask(str[2], str[4], Integer.valueOf(str[5]));
+            if (!str[7].equals("null") && !str[6].equals("null")) {
+                task = new Subtask(str[2], str[4], Integer.valueOf(str[5]), Duration.parse(str[7]), LocalDateTime.parse(str[6]));
+            } else {
+                task = new Subtask(str[2], str[4], Integer.valueOf(str[5]));
+            }
         } else if (TypeTasks.EPIC.toString().equals(str[1])) {
             task = new Epic(str[2], str[4]);
         }

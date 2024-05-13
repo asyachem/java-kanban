@@ -2,9 +2,9 @@ package manager;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tasks.Epic;
-import tasks.Subtask;
-import tasks.Task;
+import tasks.*;
+
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -149,4 +149,90 @@ class TaskManagerTest {
         assertNotNull(taskManager.getHistory());
     }
 
+    @Test
+    void shouldStatusEpicIsNewWhenAllSubtasksStatusNew() {
+        Subtask subtask1 = new Subtask("Имя","Описание", 1);
+        taskManager.addSubtask(subtask1);
+        assertEquals(epic.getStatus(), Status.NEW);
+    }
+
+    @Test
+    void shouldStatusEpicIsDoneWhenAllSubtasksStatusDone() {
+        Subtask subtask1 = new Subtask("Имя","Описание", 1);
+        taskManager.addSubtask(subtask1);
+        subtask.setStatus(Status.DONE);
+        taskManager.updateSubtask(subtask);
+        subtask1.setStatus(Status.DONE);
+        taskManager.updateSubtask(subtask1);
+
+        assertEquals(epic.getStatus(), Status.DONE);
+    }
+
+    @Test
+    void shouldStatusEpicInProgressWhenAllSubtasksStatusNewAndDone() {
+        Subtask subtask1 = new Subtask("Имя","Описание", 1);
+        taskManager.addSubtask(subtask1);
+        subtask1.setStatus(Status.DONE);
+        taskManager.updateSubtask(subtask1);
+
+        assertEquals(epic.getStatus(), Status.IN_PROGRESS);
+    }
+
+    @Test
+    void shouldStatusEpicInProgressWhenAllSubtasksStatusInProgress() {
+        Subtask subtask1 = new Subtask("Имя","Описание", 1);
+        taskManager.addSubtask(subtask1);
+        subtask.setStatus(Status.IN_PROGRESS);
+        taskManager.updateSubtask(subtask);
+        subtask1.setStatus(Status.IN_PROGRESS);
+        taskManager.updateSubtask(subtask1);
+
+        assertEquals(epic.getStatus(), Status.IN_PROGRESS);
+    }
+
+    @Test
+    void testPrioritizedTaskSaveException() {
+        Task task1 = new Task("task1","описание1", 20, LocalDateTime.of(2024, 6, 5, 15, 0));
+        Task task2 = new Task("task2","описание2", 20, LocalDateTime.of(2024, 6, 5, 15, 0));
+        taskManager.addTask(task1);
+
+        assertThrows(PrioritizedTaskSaveException.class, () -> {
+            taskManager.checkTaskTime(task2);
+        });
+    }
+
+    @Test
+    void testPrioritizedTaskSaveExceptionWhenTimeTasksNestedIntoEachOther() {
+        Task task1 = new Task("task1","описание1", 20, LocalDateTime.of(2024, 6, 5, 15, 0));
+        Task task2 = new Task("task2","описание2", 20, LocalDateTime.of(2024, 6, 5, 15, 10));
+        taskManager.addTask(task1);
+
+        assertThrows(PrioritizedTaskSaveException.class, () -> {
+            taskManager.checkTaskTime(task2);
+        });
+    }
+
+    @Test
+    void testPrioritizedTaskSaveExceptionWhenTimeTaskAndSubtaskNestedIntoEachOther() {
+        Task task1 = new Task("task1","описание1", 20, LocalDateTime.of(2024, 6, 5, 15, 0));
+        Subtask sub = new Subtask("subtask","описание2", 1, 20, LocalDateTime.of(2024, 6, 5, 15, 10));
+        taskManager.addTask(task1);
+
+        assertThrows(PrioritizedTaskSaveException.class, () -> {
+            taskManager.checkTaskTime(sub);
+        });
+    }
+
+    @Test
+    void shouldPrioritizedTasksBeSorted() {
+        Task task1 = new Task("task1","описание1", 20, LocalDateTime.of(2024, 6, 5, 15, 0));
+        Task task2 = new Task("task2","описание2", 20, LocalDateTime.of(2024, 7, 5, 15, 0));
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+
+        LocalDateTime first = taskManager.getPrioritizedTasks().first().getStartTime();
+        LocalDateTime last = taskManager.getPrioritizedTasks().last().getStartTime();
+
+        assertTrue(first.isBefore(last));
+    }
 }

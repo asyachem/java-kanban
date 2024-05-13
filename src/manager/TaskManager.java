@@ -37,4 +37,5 @@ public interface TaskManager {
 
     List<Task> getHistory();
     TreeSet<Task> getPrioritizedTasks();
+    void checkTaskTime(Task task);
 }
