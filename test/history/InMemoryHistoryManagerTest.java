@@ -8,6 +8,7 @@ import tasks.Task;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class InMemoryHistoryManagerTest {
 
@@ -97,5 +98,21 @@ class InMemoryHistoryManagerTest {
         assertEquals(task2, historyManager.getHistory().get(1));
     }
 
+    @Test
+    void shouldReturnEmptyHistory() {
+        historyManager.remove(0);
+        historyManager.remove(1);
+        historyManager.remove(2);
 
+        assertTrue(historyManager.getHistory().isEmpty());
+    }
+
+    @Test
+    void shouldNotAddDoubleTask() {
+        Task task4 = new Task("Таск1","1");
+        task4.setId(0);
+        historyManager.add(task4);
+
+        assertEquals(historyManager.getHistory().get(2), task4);
+    }
 }
