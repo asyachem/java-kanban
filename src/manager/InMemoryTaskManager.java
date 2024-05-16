@@ -47,8 +47,7 @@ public class InMemoryTaskManager implements TaskManager {
             try {
                 checkTaskTime(newTask);
             } catch (PrioritizedTaskSaveException e) {
-                System.out.println(e.getMessage());
-                return;
+                throw new PrioritizedTaskSaveException(e.getMessage());
             }
             this.prioritizedTasks.add(newTask);
         }
@@ -63,8 +62,7 @@ public class InMemoryTaskManager implements TaskManager {
             try {
                 checkTaskTime(updateTask);
             } catch (PrioritizedTaskSaveException e) {
-                System.out.println(e.getMessage());
-                return;
+                throw new PrioritizedTaskSaveException(e.getMessage());
             }
             this.prioritizedTasks.remove(this.getTaskById(updateTask.getId()));
             this.prioritizedTasks.add(updateTask);
@@ -91,8 +89,6 @@ public class InMemoryTaskManager implements TaskManager {
             tasks.remove(id);
 
             historyManager.remove(id);
-
-            System.out.println("Задачу удалили.");
         } else {
             System.out.println("Такой задачи нет");
         }

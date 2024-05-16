@@ -5,11 +5,15 @@ import history.HistoryManager;
 import history.InMemoryHistoryManager;
 
 public class Managers {
+    private static TaskManager taskManager;
     public static HistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
     }
 
     public static TaskManager getDefault() {
-        return new FileBackedTaskManager("tasks.csv");
+        if(taskManager == null){
+            taskManager = FileBackedTaskManager.loadFromFile("tasks.csv");
+        }
+        return taskManager;
     }
 }
