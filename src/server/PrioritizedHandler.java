@@ -1,23 +1,17 @@
 package server;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
+import manager.TaskManager;
 import tasks.Task;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.TreeSet;
 
-public class PrioritizedHandler extends BaseHttpHandler implements HttpHandler {
-    Gson gson = new GsonBuilder()
-            .serializeNulls()
-            .setPrettyPrinting()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-            .registerTypeAdapter(Duration.class, new DurationAdapter())
-            .create();
+public class PrioritizedHandler extends BaseHttpHandler {
+
+    public PrioritizedHandler(TaskManager taskManager) {
+        super(taskManager);
+    }
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
@@ -37,7 +31,7 @@ public class PrioritizedHandler extends BaseHttpHandler implements HttpHandler {
     private void handleGetPrioritizedTasks(HttpExchange exchange) throws IOException {
         TreeSet<Task> tasks = taskManager.getPrioritizedTasks();
 
-        String jsonArray = this.gson.toJson(tasks);
+        String jsonArray = gson.toJson(tasks);
 
         sendText(exchange, jsonArray, 200);
     }

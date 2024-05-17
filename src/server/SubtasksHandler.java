@@ -1,28 +1,21 @@
 package server;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
+import manager.TaskManager;
 import tasks.PrioritizedTaskSaveException;
 import tasks.Subtask;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class SubtasksHandler extends BaseHttpHandler implements HttpHandler {
+public class SubtasksHandler extends BaseHttpHandler {
 
-    Gson gson = new GsonBuilder()
-            .serializeNulls()
-            .setPrettyPrinting()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-            .registerTypeAdapter(Duration.class, new DurationAdapter())
-            .create();
+    public SubtasksHandler(TaskManager taskManager) {
+        super(taskManager);
+    }
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
@@ -59,7 +52,7 @@ public class SubtasksHandler extends BaseHttpHandler implements HttpHandler {
     private void handleGetTasks(HttpExchange exchange) throws IOException {
         ArrayList<Subtask> subtasks = taskManager.getAllSubtasks();
 
-        String jsonArray = this.gson.toJson(subtasks);
+        String jsonArray = gson.toJson(subtasks);
 
         sendText(exchange, jsonArray, 200);
     }
@@ -73,7 +66,7 @@ public class SubtasksHandler extends BaseHttpHandler implements HttpHandler {
         }
         Subtask subtask = subtaskOpt.get();
 
-        String jsonSubtask = this.gson.toJson(subtask);
+        String jsonSubtask = gson.toJson(subtask);
         sendText(exchange, jsonSubtask, 200);
     }
 

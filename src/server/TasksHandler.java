@@ -1,27 +1,21 @@
 package server;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
+import manager.TaskManager;
 import tasks.PrioritizedTaskSaveException;
 import tasks.Task;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class TasksHandler extends BaseHttpHandler implements HttpHandler {
-    Gson gson = new GsonBuilder()
-            .serializeNulls()
-            .setPrettyPrinting()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-            .registerTypeAdapter(Duration.class, new DurationAdapter())
-            .create();
+public class TasksHandler extends BaseHttpHandler {
+
+    public TasksHandler(TaskManager taskManager) {
+        super(taskManager);
+    }
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
@@ -92,7 +86,6 @@ public class TasksHandler extends BaseHttpHandler implements HttpHandler {
         sendText(exchange, "Задача была удалена", 200);
     }
 
-
     private void handleGetTaskById(HttpExchange exchange) throws IOException {
         int taskId = Integer.parseInt(exchange.getRequestURI().getPath().split("/")[2]);
 
@@ -102,14 +95,14 @@ public class TasksHandler extends BaseHttpHandler implements HttpHandler {
         }
         Task task = taskOpt.get();
 
-        String jsonTask = this.gson.toJson(task);
+        String jsonTask = gson.toJson(task);
         sendText(exchange, jsonTask, 200);
     }
 
     private void handleGetTasks(HttpExchange exchange) throws IOException {
         ArrayList<Task> tasks = taskManager.getAllTasks();
 
-        String jsonArray = this.gson.toJson(tasks);
+        String jsonArray = gson.toJson(tasks);
 
         sendText(exchange, jsonArray, 200);
     }

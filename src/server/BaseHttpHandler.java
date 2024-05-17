@@ -1,21 +1,36 @@
 package server;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
-import manager.Managers;
+import com.sun.net.httpserver.HttpHandler;
 import manager.TaskManager;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
-public class BaseHttpHandler {
+public abstract class BaseHttpHandler implements HttpHandler {
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+
+    static Gson gson = new GsonBuilder()
+            .serializeNulls()
+            .setPrettyPrinting()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+            .registerTypeAdapter(Duration.class, new DurationAdapter())
+            .create();
 
     protected final TaskManager taskManager;
 
-    public BaseHttpHandler() {
-        this.taskManager = Managers.getDefault();
+/*    public BaseHttpHandler() {
+        this.taskManager = FileBackedTaskManager.loadFromFile("tasks.csv");
+    }*/
+
+    public BaseHttpHandler(TaskManager taskManager) {
+        this.taskManager = taskManager;
     }
 
     protected void sendText(HttpExchange h, String text, int responseCode) throws IOException {
@@ -61,4 +76,10 @@ public class BaseHttpHandler {
         return Endpoint.UNKNOWN;
     }
 
+    @Override
+    public void handle(HttpExchange exchange) throws IOException {}
+
+    public static Gson getGson() {
+        return gson;
+    }
 }

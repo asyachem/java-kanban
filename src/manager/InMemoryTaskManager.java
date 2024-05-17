@@ -30,7 +30,6 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         tasks.clear();
-        System.out.println("tasks.Task пустой");
     }
 
     @Override
@@ -226,16 +225,12 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         epics.clear();
-        System.out.println(epics);
-        System.out.println("Эпики пустые");
 
         for (int id : subTasks.keySet()){
             historyManager.remove(id);
         }
 
         subTasks.clear();
-        System.out.println(subTasks);
-        System.out.println("Сабтаски пустые");
     }
 
     @Override

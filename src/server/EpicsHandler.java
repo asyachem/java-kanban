@@ -1,27 +1,21 @@
 package server;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
+import manager.TaskManager;
 import tasks.Epic;
 import tasks.PrioritizedTaskSaveException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
-    Gson gson = new GsonBuilder()
-            .serializeNulls()
-            .setPrettyPrinting()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-            .registerTypeAdapter(Duration.class, new DurationAdapter())
-            .create();
+public class EpicsHandler extends BaseHttpHandler {
+
+    public EpicsHandler(TaskManager taskManager) {
+        super(taskManager);
+    }
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
@@ -57,7 +51,7 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
     private void handleGetTasks(HttpExchange exchange) throws IOException {
         ArrayList<Epic> epics = taskManager.getAllEpics();
 
-        String jsonArray = this.gson.toJson(epics);
+        String jsonArray = gson.toJson(epics);
 
         sendText(exchange, jsonArray, 200);
     }
@@ -71,7 +65,7 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
         }
         Epic epic = epicOpt.get();
 
-        String jsonTask = this.gson.toJson(epic);
+        String jsonTask = gson.toJson(epic);
         sendText(exchange, jsonTask, 200);
     }
 
