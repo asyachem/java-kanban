@@ -54,8 +54,7 @@ public class TasksHandler extends BaseHttpHandler {
         String taskJson = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
         Task task = gson.fromJson(taskJson, Task.class);
 
-        // если передать в запросе объект с id null, то id присваивает 0, как исправить, чтобы было null?
-        Optional<Integer> id = Optional.of(task.getId());
+        Optional<Integer> id = Optional.ofNullable(task.getId());
         if (id.isEmpty()) {
             try {
                 taskManager.addTask(task);

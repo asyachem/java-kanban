@@ -75,7 +75,7 @@ public class SubtasksHandler extends BaseHttpHandler {
         String subtaskJson = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
         Subtask subtask = gson.fromJson(subtaskJson, Subtask.class);
 
-        Optional<Integer> id = Optional.of(subtask.getId());
+        Optional<Integer> id = Optional.ofNullable(subtask.getId());
         if (id.isEmpty()) {
             try {
                 taskManager.addSubtask(subtask);

@@ -56,7 +56,7 @@ public class HttpTaskManagerTasksTest {
         // вызываем рест, отвечающий за создание задач
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         // проверяем код ответа
-        assertEquals(200, response.statusCode());
+        assertEquals(201, response.statusCode());
 
         // проверяем, что создалась одна задача с корректным именем
         List<Task> tasksFromManager = manager.getAllTasks();
@@ -69,6 +69,7 @@ public class HttpTaskManagerTasksTest {
         manager.addTask(task);
 
         Task task1 = new Task("Test", "Testing", 5, LocalDateTime.of(2000, 6, 10, 10, 0));
+        task1.setId(0);
         String taskJson = gson.toJson(task1);
 
         HttpClient client = HttpClient.newHttpClient();

@@ -74,7 +74,7 @@ public class EpicsHandler extends BaseHttpHandler {
         String epicJson = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
         Epic epic = gson.fromJson(epicJson, Epic.class);
 
-        Optional<Integer> id = Optional.of(epic.getId());
+        Optional<Integer> id = Optional.ofNullable(epic.getId());
         if (id.isEmpty()) {
             try {
                 taskManager.addEpic(epic);
