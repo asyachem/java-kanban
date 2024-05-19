@@ -7,7 +7,7 @@ import java.util.Objects;
 public class Task {
     private String name;
     private String description;
-    private int id;
+    private Integer id;
     private Status status;
     private Duration duration; //продолжительность задачи
     private LocalDateTime startTime; //дата и время, когда предполагается приступить к выполнению задачи
@@ -34,11 +34,11 @@ public class Task {
         this.startTime = startTime;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -76,7 +76,7 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return id == task.id && Objects.equals(name, task.name) && Objects.equals(description, task.description) && status == task.status;
+        return Objects.equals(id, task.id) && Objects.equals(name, task.name) && Objects.equals(description, task.description) && status == task.status;
     }
 
     @Override
