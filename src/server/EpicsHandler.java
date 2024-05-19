@@ -108,7 +108,6 @@ public class EpicsHandler extends BaseHttpHandler {
     Optional<Integer> getTaskId(HttpExchange exchange) {
         String[] pathParts = exchange.getRequestURI().getPath().split("/");
         if (pathParts.length < 2) {
-            System.out.println('3');
             return Optional.empty();
         } else {
             return Optional.of(Integer.parseInt(pathParts[2]));

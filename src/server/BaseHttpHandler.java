@@ -25,10 +25,6 @@ public abstract class BaseHttpHandler implements HttpHandler {
 
     protected final TaskManager taskManager;
 
-/*    public BaseHttpHandler() {
-        this.taskManager = FileBackedTaskManager.loadFromFile("tasks.csv");
-    }*/
-
     public BaseHttpHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
     }
@@ -75,9 +71,6 @@ public abstract class BaseHttpHandler implements HttpHandler {
         }
         return Endpoint.UNKNOWN;
     }
-
-    @Override
-    public void handle(HttpExchange exchange) throws IOException {}
 
     public static Gson getGson() {
         return gson;

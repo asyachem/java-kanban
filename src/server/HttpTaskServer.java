@@ -11,8 +11,7 @@ public class HttpTaskServer {
     private static final int PORT = 8080;
     static HttpServer httpServer;
 
-    protected static TaskManager taskManager = FileBackedTaskManager.loadFromFile("tasks.csv");
-    public HttpTaskServer() {}
+    protected static TaskManager taskManager;
     public HttpTaskServer(TaskManager taskManager) {
         HttpTaskServer.taskManager = taskManager;
     }
